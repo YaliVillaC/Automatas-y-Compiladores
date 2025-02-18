@@ -1,0 +1,13 @@
+%option noyywrap
+%{
+	#include<stdio.h>
+%}
+
+%%
+. {printf("Hola Mundo");}
+%%
+int main()
+{
+	yylex();
+	return 0;
+}
