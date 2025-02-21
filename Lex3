@@ -1,0 +1,40 @@
+%option noyywrap
+%{
+	#include<stdio.h>
+%}
+
+/*Palabras que contienen la cadena ae,ai,ao,au*/
+CADENA (ae|ai|ao|au)
+ABECEDARIO [a-z]
+PALABRA {ABECEDARIO}*{CADENA}{ABECEDARIO}*
+
+/*Cadenas de simbolos 0,1 que inicioen o terminen con 00*/
+SIMBOLOS (0|1)
+CADSIM (00{SIMBOLOS}*|{SIMBOLOS}*00)
+
+/*Numeros enteros y decimales sin signo*/
+ENTERO [0-9]+
+DECIMAL {ENTERO}.{ENTERO}
+
+/*5 palabras reservadas de java*/
+PALARES (char|class|boolean|case|long)
+
+/*Palabras que inicien en mayuscula */
+INICIO [A-Z]
+NOMBRE {INICIO}{ABECEDARIO}+
+
+%%
+{PALABRA} printf("Palabra Aceptada: %s\n", yytext);
+{CADSIM} printf("Palabra de simbolos Aceptada: %s\n", yytext);
+{ENTERO} printf("Numero Entero: %s\n", yytext);
+{DECIMAL} printf("Numero Decimal: %s\n", yytext);
+{PALARES} printf("Palabra Reservada Java: %s\n", yytext);
+{NOMBRE} printf("Nombre Propio: %s\n", yytext);
+
+.|\n   ;
+%%
+int main()
+{
+	yylex();
+	return 0;
+}
