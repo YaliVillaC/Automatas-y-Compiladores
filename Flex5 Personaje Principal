@@ -1,0 +1,68 @@
+%option noyywrap
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+// Contadores generales
+int contadorHar = 0;
+int contadorHer = 0;
+int contadorRon = 0;
+int contadorSir = 0;
+int contadorRem = 0;
+%}
+
+/* Definición de palabras clave */
+HARRY "Harry Potter"|"Harry"|"Potter"|"HARRY"|"Sr. Potter"
+HERMIONE "Hermione Granger"|"Hermione"|"Granger"|"Srta. Granger"
+RON "Ron Weasley"|"Ron"|"Weasley"|"Ronald"
+SIRIUS "Sirius Black"|"SIRIUS"|"Sirius"|"Black"
+REMUS "Lupin"|"Profesor Lupin"|"Remus"
+
+/* Reglas */
+%%
+{HARRY}    { contadorHar++; }
+{HERMIONE} { contadorHer++; }
+{RON}      { contadorRon++; }
+{SIRIUS}   { contadorSir++; }
+{REMUS}    { contadorRem++; }
+%%
+
+int main() {
+    setlocale(LC_ALL, "en_US.UTF-8");
+
+    FILE *archivo = fopen("El_Prisionero_de_Azkaban.txt", "r");
+
+    if (!archivo) {
+        printf("Error: No se pudo abrir el archivo 'El_Prisionero_de_Azkaban.txt'.\n");
+        return 1;
+    }
+
+    yyin = archivo;
+    yylex();
+    fclose(archivo);
+
+    // Imprimir conteos
+    printf("\n\n>>> Cantidad de menciones por personaje:");
+    printf("\n Harry: %d", contadorHar);
+    printf("\n Hermione: %d", contadorHer);
+    printf("\n Ron: %d", contadorRon);
+    printf("\n Sirius: %d", contadorSir);
+    printf("\n Remus: %d", contadorRem);
+
+    // Determinar el personaje más mencionado
+    printf("\n\n>>> EL PERSONAJE MÁS MENCIONADO ES: ");
+    if (contadorHar >= contadorHer && contadorHar >= contadorRon && contadorHar >= contadorSir && contadorHar >= contadorRem) {
+        printf("HARRY (%d menciones)\n", contadorHar);
+    } else if (contadorHer >= contadorHar && contadorHer >= contadorRon && contadorHer >= contadorSir && contadorHer >= contadorRem) {
+        printf("HERMIONE (%d menciones)\n", contadorHer);
+    } else if (contadorRon >= contadorHar && contadorRon >= contadorHer && contadorRon >= contadorSir && contadorRon >= contadorRem) {
+        printf("RON (%d menciones)\n", contadorRon);
+    } else if (contadorSir >= contadorHar && contadorSir >= contadorHer && contadorSir >= contadorRon && contadorSir >= contadorRem) {
+        printf("SIRIUS (%d menciones)\n", contadorSir);
+    } else {
+        printf("REMUS (%d menciones)\n", contadorRem);
+    }
+
+    return 0;
+}
