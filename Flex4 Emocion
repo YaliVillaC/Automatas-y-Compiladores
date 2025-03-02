@@ -1,0 +1,89 @@
+%option noyywrap
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <locale.h>
+
+// Contadores generales
+int contadorpos = 0;
+int contadorposAm = 0;
+int contadorposAl = 0;
+int contadorposEs = 0;
+int contadorposEx = 0;
+
+int contadorneg = 0;
+int contadornegTr = 0;
+int contadornegMi = 0;
+int contadornegEn = 0;
+int contadornegDe = 0;
+
+int contadorneu = 0;
+%}
+
+/* Expresiones para las palabras positivas */
+PALABRAPOSITIVA "querer"|"amar"|"cariño"|"alegria"|"feliz"|"contento"|"entusiasmo"|"risa"|"euforia"|"placer"|"confianza"|"ilusion"|"logro"|"triunfo"|"avance"|"ganar"|"orgullo"|"mejor"|"éxito"
+
+/* Expresiones para las palabras negativas */
+PALABRANEGATIVA "vacio"|"desesperanza"|"perdida"|"dolor"|"temor"|"angustia"|"inseguridad"|"panico"|"horror"|"amenaza"|"ira"|"odio"|"rabia"|"resentimiento"|"venganza"|"asesinato"|"decepcion"
+
+/* Expresiones para las palabras neutrales */
+PALABRANEUTRAL "cambio"|"duda"|"destino"|"misterio"|"sorpresa"
+
+/* Reglas */
+%%
+"querer"|"amar"|"cariño"      { contadorpos++; contadorposAm++; printf("Palabra AMOR: %s\n", yytext); }
+"alegria"|"feliz"|"contento"|"entusiasmo"|"risa"|"euforia"|"placer" { contadorpos++; contadorposAl++; printf("Palabra ALEGRIA: %s\n", yytext); }
+"confianza"|"ilusion"         { contadorpos++; contadorposEs++; printf("Palabra ESPERANZA: %s\n", yytext); }
+"logro"|"triunfo"|"avance"|"ganar"|"orgullo"|"mejor"|"éxito" { contadorpos++; contadorposEx++; printf("Palabra EXITO: %s\n", yytext); }
+
+"vacio"|"desesperanza"|"perdida"|"dolor" { contadorneg++; contadornegTr++; printf("Palabra TRISTEZA: %s\n", yytext); }
+"temor"|"angustia"|"inseguridad"|"panico"|"horror"|"amenaza" { contadorneg++; contadornegMi++; printf("Palabra MIEDO: %s\n", yytext); }
+"ira"|"odio"|"rabia"|"resentimiento"|"venganza"|"asesinato" { contadorneg++; contadornegEn++; printf("Palabra ENOJO: %s\n", yytext); }
+"decepcion" { contadorneg++; contadornegDe++; printf("Palabra DERROTA: %s\n", yytext); }
+
+"cambio"|"duda"|"destino"|"misterio"|"sorpresa" { contadorneu++; printf("Palabra neutral: %s\n", yytext); }
+
+%%
+
+int main() {
+    setlocale(LC_ALL, "en_US.UTF-8");
+
+    FILE *archivo = fopen("El_Prisionero_de_Azkaban.txt", "r");
+
+    if (!archivo) {
+        printf("Error: No se pudo abrir el archivo 'Prueba5.txt'.\n");
+        return 1;
+    }
+
+    yyin = archivo;
+    yylex();
+    fclose(archivo);
+
+     // Determinar cuál categoría tiene más palabras
+    printf("\n\n>>> CATEGORÍA CON MÁS PALABRAS: ");
+    if (contadorpos > contadorneg && contadorpos > contadorneu) {
+        printf("POSITIVAS (%d palabras)\n", contadorpos);
+    } else if (contadorneg > contadorpos && contadorneg > contadorneu) {
+        printf("NEGATIVAS (%d palabras)\n", contadorneg);
+    } else if (contadorneu > contadorpos && contadorneu > contadorneg) {
+        printf("NEUTRALES (%d palabras)\n", contadorneu);
+    } else {
+        printf("EMPATE entre categorías\n");
+    }
+
+    printf("\n\n\n El archivo tiene %d palabras positivas", contadorpos);
+    printf("\n Amor: %d palabras ", contadorposAm);
+    printf("\n Alegría: %d palabras ", contadorposAl);
+    printf("\n Esperanza: %d palabras ", contadorposEs);
+    printf("\n Éxito: %d palabras ", contadorposEx);
+
+    printf("\n\n\n El archivo tiene %d palabras negativas", contadorneg);
+    printf("\n Tristeza: %d palabras ", contadornegTr);
+    printf("\n Miedo: %d palabras ", contadornegMi);
+    printf("\n Enojo: %d palabras ", contadornegEn);
+    printf("\n Derrota: %d palabras ", contadornegDe);
+
+    printf("\n\n\n El archivo tiene %d palabras neutrales", contadorneu);
+
+    return 0;
+}
