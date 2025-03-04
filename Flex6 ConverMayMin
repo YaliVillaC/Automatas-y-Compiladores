@@ -1,0 +1,24 @@
+%option noyywrap
+%{
+	#include<stdio.h>
+	#include<ctype.h>
+%}
+
+%%
+.	{putchar(tolower(yytext[0]));}
+\n	{putchar('\n');}
+%%
+int main()
+{
+	FILE *archivo = fopen("Fabula.txt", "r");
+
+    if (!archivo) {
+        printf("Error: No se pudo abrir el archivo 'Fabula.txt'.\n");
+        return 1;
+    }
+
+	yyin = archivo;
+	yylex();
+
+	return 0;
+}
