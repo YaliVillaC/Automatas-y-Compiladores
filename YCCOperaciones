@@ -1,0 +1,29 @@
+%{
+#include <stdio.h>
+int yylex(void);
+int yywrap();
+int yyerror(char* s);  
+%}
+
+
+%start program  
+%union { int inum; }
+
+%token NUM OPERATOR
+
+%%
+
+program: NUM OPERATOR NUM
+    {
+        printf("Se procesa la entrada \"Operación\" y es correcta de acuerdo con las reglas.\n");
+    };
+
+%%
+
+/* Función principal que inicia el analizador */
+int main() {
+    printf("beginning\n");
+    int res = yyparse();
+    printf("ending, %d\n", res);
+    return(res);
+}
