@@ -1,0 +1,26 @@
+int yylex(void);
+int yywrap();
+int yyerror(char* s);  
+%}
+
+%start program
+%token PROTOCOLO TRIPLEW DIAGONAL PUNTO DOSPUNTO CADENA EXTENSION
+
+%%
+
+program:
+    PROTOCOLO DOSPUNTO DIAGONAL DIAGONAL TRIPLEW PUNTO CADENA PUNTO EXTENSION {
+        printf("Se procesa la entrada \"LINK WEB\" y es correcta de acuerdo con las reglas.\n");
+    };
+
+%%
+
+int main() {
+    printf("Ingresa el link a comprobar:\n");
+    if (yyparse() == 1) {  
+       printf("Invalido\n"); 
+    } else {
+        printf("Valido\n");
+    }
+    return 0;
+}
