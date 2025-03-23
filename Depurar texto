@@ -1,0 +1,50 @@
+%option noyywrap
+%{
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+FILE *yyout;  // Se debe declarar yyout como un puntero a FILE
+
+%}
+
+CONECTOR         "y"|"o"|"pero"|"aunque"|"porque"|"además"|"entonces"|"luego"|"después"|"antes"
+PREPOSICION      "de"|"en"|"con"|"para"|"por"|"sin"|"sobre"|"entre"|"hasta"|"desde"|"durante"|"mediante"|"hacia"|"bajo"|"tras"
+ARTICULO         "el"|"la"|"los"|"las"|"un"|"una"|"unos"|"unas"
+PRONOMBRE        "mi"|"tu"|"su"|"nuestro"|"vuestro"|"este"|"ese"|"aquel"
+VERBO_AUX        "ser"|"estar"|"haber"|"tener"|"hacer"|"poder"|"deber"|"ir"|"venir"
+ADVERBIO         "siempre"|"nunca"|"casi"
+HARRY		 "Harry Potter"|"Harry"|"Potter"|"HARRY"|"Sr. Potter"
+HERMIONE	"Hermione Granger"|"Hermione"|"Granger"|"Srta. Granger"
+RON		"Ron Weasley"|"Ron"|"Weasley"|"Ronald"
+SIRIUS		"Sirius Black"|"SIRIUS"|"Sirius"|"Black"
+REMUS		"Lupin"|"Profesor Lupin"|"Remus"
+
+%%
+
+{CONECTOR}|{PREPOSICION}|{ARTICULO}|{PRONOMBRE}|{VERBO_AUX}|{ADVERBIO}|{HARRY}|{HERMIONE}|{RON}|{SIRIUS}|{REMUS}   { /* No hacer nada */ }
+
+[a-zA-Z]+        { fprintf(yyout, "%s ", yytext); }  // Escribir palabra al archivo de salida
+
+.                { fprintf(yyout, "%s", yytext); }  // Para otros caracteres
+
+\n               { fprintf(yyout, "\n"); }  // Salto de línea
+
+%%
+
+int main() {
+    yyin = fopen("El_Prisionero_de_Azkaban.txt", "r");
+    yyout = fopen("ArchivoResultado.txt", "w");
+    
+    if (!yyin || !yyout) {
+        perror("Error al abrir los archivos");
+        return 1;
+    }
+
+    yylex();  // Procesar el archivo de entrada
+
+    fclose(yyin);  // Cerrar el archivo de entrada
+    fclose(yyout); // Cerrar el archivo de salida
+
+    return 0;
+}
