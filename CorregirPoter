@@ -1,48 +1,42 @@
 %option noyywrap
 %{
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <locale.h>
-    #include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-    int contadorPot = 0;  
-    char cadCor[] = "Potter";  
-
+char cadCor[] = "Potter";
+char cadInc[] = "Poter";
+int contadorPot = 0;
 %}
 
-INCORRECTO    "Poter"
-
 %%
 
-{INCORRECTO} {
-    printf("%s", cadCor);  
-    contadorPot++;         
-}
-
-.   { putchar(yytext[0]); }  
-
-%%
-
-int main(int argc, char *argv[]) {
-    FILE *archivo;
-
-    if (argc > 1) {
-        archivo = fopen(argv[1], "r");
-        if (!archivo) {
-            perror("Error al abrir el archivo");
-            return 1;
-        }
-        yyin = archivo;
-    }
-
-    yylex();  
-
-    if (contadorPot > 0) {
-        printf("\nSe corrigieron %d errores.\n", contadorPot);
+[a-zA-Z]+ {
+    if (strcmp(yytext, cadInc) == 0) {
+        fprintf(yyout, "%s", cadCor);
+        contadorPot++;
     } else {
-        printf("\nNo se encontraron errores.\n");
+        fprintf(yyout, "%s", yytext);
     }
+}
+. { fprintf(yyout, "%s", yytext); }
 
-    if (archivo) fclose(archivo);
+%%
+
+int main() {
+    yyin = fopen("El_Prisionero_de_Azkaban.txt", "r");
+    yyout = fopen("Potterresultado.txt", "w");
+    
+    if (!yyin || !yyout) {
+        perror("Error al abrir los archivos");
+        return 1;
+    }
+    
+    yylex();
+    
+    printf("Se corrigieron %d errores.\n", contadorPot);
+    
+    fclose(yyin);
+    fclose(yyout);
     return 0;
 }
