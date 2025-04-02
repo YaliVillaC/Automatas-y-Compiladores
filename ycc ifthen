@@ -1,0 +1,25 @@
+%option noyywrap
+%{
+    #include <stdio.h>
+    #include "y.tab.h"
+%}
+
+CONRE ">"|"<"|">="|"<="|"=="|"!="
+CONLOG "||"|"&&"
+VAR [a-zA-Z][a-zA-Z0-9]* 
+NUM [0-9]+ 
+
+%%
+
+"if"    { return IF; }
+"("     { return PARA; }
+")"     { return PARC; }
+"{"     { return LLAVA; }
+"}"     { return LLAVC; }
+{CONRE} { return CONRE_OP; }
+{CONLOG} { return CONLOG_OP; }
+{VAR}   { return IDENTIFIER; }
+{NUM}   { return NUMBER; }
+[ \t\n]+   {/* Ignorar espacios y saltos de línea */}
+. {/* Ignorar otros */}
+%%
