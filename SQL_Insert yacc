@@ -1,0 +1,42 @@
+%{
+    #include <stdio.h>
+    int yylex(void);
+    int yyerror(char* s);
+%}
+
+%start sentencia
+
+%token INSERT INTO VALUES IDENTIFIER NUMBER STRING PARI PARA COMA FIN
+
+%%
+
+sentencia: INSERT INTO tabla VALUES PARI valores PARA FIN
+    {
+        printf("Se procesa la entrada \"sentencia SQL\" y es correcta de acuerdo con las reglas.\n");
+    }
+;
+
+tabla: IDENTIFIER
+;
+
+valores: valor
+       | valor COMA valores
+;
+
+valor: STRING
+     | NUMBER
+;
+
+%%
+
+int yyerror(char* s) {
+    fprintf(stderr, "Error: %s\n", s);
+    return 1;
+}
+
+int main() {
+    printf("beginning\n");
+    int res = yyparse();
+    printf("ending, %d\n", res);
+    return res;
+}
