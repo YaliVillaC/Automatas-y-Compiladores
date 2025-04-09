@@ -1,0 +1,29 @@
+%option noyywrap
+%{
+    #include <stdio.h>
+    #include "y.tab.h"
+%}
+
+INS     "INSERT"
+IN      "INTO"
+VAL     "VALUES"
+IDENT   [a-z]+
+CAD     \"[^\"]*\"
+NUM     [0-9]+
+
+%%
+
+";"         { return FIN; }
+","         { return COMA; }
+"("         { return PARI; }
+")"         { return PARA; }
+{INS}       { return INSERT; }
+{IN}        { return INTO; }
+{VAL}       { return VALUES; }
+{IDENT}     { return IDENTIFIER; }
+{CAD}       { return STRING; }
+{NUM}       { return NUMBER; }
+[ \t\n]+    { /* ignorar espacios y saltos de línea */ }
+.           { /* ignorar otros caracteres */ }
+
+%%
